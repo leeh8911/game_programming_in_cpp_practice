@@ -1,0 +1,33 @@
+{
+    "configurations": [
+        {
+            "name": "Win64",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Users/leeh8/.conan/data/**",
+                "C:/.conan/**",
+                "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/include/**",
+                "C:/CppBuild/llvm-mingw-20220906-msvcrt-x86_64/include/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "${default}",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**",
+                    "C:/Users/leeh8/.conan/data/**",
+                    "C:/.conan/**",
+                    "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/include/**",
+                    "C:/CppBuild/llvm-mingw-20220906-msvcrt-x86_64/include/**"
+                ],
+            }
+        }
+    ],
+    "version": 4
+}

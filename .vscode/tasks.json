@@ -1,0 +1,59 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "build",
+            "command": "make build",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Build"
+        },
+        {
+            "type": "shell",
+            "label": "test",
+            "command": "make test",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "Test"
+        },
+        {
+            "type": "shell",
+            "label": "example",
+            "command": "make example",
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "example"
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: clang++.exe 활성 파일 빌드",
+            "command": "C:\\CppBuild\\llvm-mingw-20220906-msvcrt-x86_64\\bin\\clang++.exe",
+            "args": [
+                "-fcolor-diagnostics",
+                "-fansi-escape-codes",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "디버거에서 생성된 작업입니다."
+        }
+    ],
+    "version": "2.0.0"
+}
