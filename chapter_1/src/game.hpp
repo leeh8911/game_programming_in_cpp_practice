@@ -37,6 +37,7 @@ class Game
 
     bool mIsRunning{false};
     std::shared_ptr<sf::RenderWindow> mWindowPtr{nullptr};
+    sf::Clock mClock{};
 
     Player mPlayer{};
 };

@@ -19,6 +19,11 @@ namespace gmlib
 class Player
 {
  public:
+    enum class Movement
+    {
+        kUp,
+        kDown
+    };
     Player();
     ~Player();
 
@@ -27,16 +32,13 @@ class Player
     void setSize(sf::Vector2f size);
     sf::Vector2f getSize() const;
 
+    void move(Movement movement);
+
  private:
     sf::Vector2f mPosition{0.0f, 0.0f};
-
     sf::Vector2f mSize{20.F, 200.F};
 };
 
-inline void Player::setPosition(sf::Vector2f position) { mPosition = position; }
-inline sf::Vector2f Player::getPosition() const { return mPosition; }
-inline void Player::setSize(sf::Vector2f size) { mSize = size; }
-inline sf::Vector2f Player::getSize() const { return mSize; }
 }  // namespace gmlib
 
 #endif  // PLAYER_HPP_

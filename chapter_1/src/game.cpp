@@ -9,12 +9,14 @@
  *
  */
 
-#include "game.hpp"
+#include "src/game.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <string>
 #include <unordered_map>
+
+#include "src/player.hpp"
 
 namespace gmlib
 {
@@ -22,6 +24,7 @@ bool Game::initialize()
 {
     mWindowPtr = std::make_shared<sf::RenderWindow>(
         sf::VideoMode(1024, 768), "Game Programming in C++ (Chapter 1)");
+    mWindowPtr->setFramerateLimit(60);
 
     mIsRunning = true;
 
@@ -36,10 +39,15 @@ bool Game::initialize()
 
 void Game::runLoop()
 {
+    mClock.restart();
+
     while (mIsRunning)
     {
         processInput();
+
         updateGame();
+        mClock.restart();
+
         generateOutput();
     }
 }
@@ -58,6 +66,14 @@ void Game::processInput()
                 {
                     mIsRunning = false;
                 }
+                if (event.key.code == sf::Keyboard::W)
+                {
+                    mPlayer.move(Player::Movement::kUp);
+                }
+                if (event.key.code == sf::Keyboard::S)
+                {
+                    mPlayer.move(Player::Movement::kDown);
+                }
                 break;
             case sf::Event::Closed:
                 mIsRunning = false;
@@ -66,7 +82,10 @@ void Game::processInput()
     }
 }
 
-void Game::updateGame() {}
+void Game::updateGame()
+{
+    // auto delta_time = mClock.getElapsedTime().asSeconds();
+}
 
 void Game::generateOutput()
 {
