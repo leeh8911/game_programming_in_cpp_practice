@@ -12,6 +12,7 @@
 #include "src/game.hpp"
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -28,12 +29,13 @@ bool Game::initialize()
 
     mIsRunning = true;
 
-    mPlayer = Player();
-    sf::Vector2f windowPosition =
-        static_cast<sf::Vector2f>(mWindowPtr->getPosition());
-    float margin = 10.F;
-    mPlayer.setPosition({margin, windowPosition.y / 2});
+    sf::Vector2f windowSize = static_cast<sf::Vector2f>(mWindowPtr->getSize());
+    float margin = 100.F;
+    mPlayers.first.setPosition({margin, windowSize.y / 2});
+    mPlayers.second.setPosition({windowSize.x - margin, windowSize.y / 2});
 
+    std::cout << "Second player position: " << mPlayers.second.getPosition().x
+              << ", " << mPlayers.second.getPosition().y << "\n";
     return true;
 }
 
@@ -68,11 +70,19 @@ void Game::processInput()
                 }
                 if (event.key.code == sf::Keyboard::W)
                 {
-                    mPlayer.move(Player::Movement::kUp);
+                    mPlayers.first.move(Player::Movement::kUp);
                 }
                 if (event.key.code == sf::Keyboard::S)
                 {
-                    mPlayer.move(Player::Movement::kDown);
+                    mPlayers.first.move(Player::Movement::kDown);
+                }
+                if (event.key.code == sf::Keyboard::Up)
+                {
+                    mPlayers.second.move(Player::Movement::kUp);
+                }
+                if (event.key.code == sf::Keyboard::Down)
+                {
+                    mPlayers.second.move(Player::Movement::kDown);
                 }
                 break;
             case sf::Event::Closed:
@@ -87,19 +97,25 @@ void Game::updateGame()
     // auto delta_time = mClock.getElapsedTime().asSeconds();
 }
 
-void Game::generateOutput()
+void Game::drawPlayer(const Player& player) const
 {
-    mWindowPtr->clear(sf::Color::Black);
-
-    sf::Vector2f playerPosition = mPlayer.getPosition();
-    sf::Vector2f playerSize = mPlayer.getSize();
+    sf::Vector2f playerPosition = player.getPosition();
+    sf::Vector2f playerSize = player.getSize();
 
     sf::RectangleShape playerShape;
-    playerShape.setPosition(playerPosition + playerSize / 2.F);
+    playerShape.setPosition(playerPosition - playerSize / 2.F);
     playerShape.setSize(playerSize);
     playerShape.setFillColor(sf::Color::White);
 
     mWindowPtr->draw(playerShape);
+}
+
+void Game::generateOutput()
+{
+    mWindowPtr->clear(sf::Color::Black);
+
+    drawPlayer(mPlayers.first);
+    drawPlayer(mPlayers.second);
 
     mWindowPtr->display();
 }

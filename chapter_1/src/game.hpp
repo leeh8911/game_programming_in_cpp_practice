@@ -16,8 +16,10 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
 
 #include "src/player.hpp"
+
 
 namespace gmlib
 {
@@ -33,13 +35,15 @@ class Game
  private:
     void processInput();
     void updateGame();
+
     void generateOutput();
+    void drawPlayer(const Player& player) const;
 
     bool mIsRunning{false};
     std::shared_ptr<sf::RenderWindow> mWindowPtr{nullptr};
     sf::Clock mClock{};
 
-    Player mPlayer{};
+    std::pair<Player, Player> mPlayers{};
 };
 }  // namespace gmlib
 
