@@ -18,6 +18,7 @@
 #include <unordered_map>
 
 #include "src/player.hpp"
+#include "src/wall.hpp"
 
 namespace gmlib
 {
@@ -30,12 +31,18 @@ bool Game::initialize()
     mIsRunning = true;
 
     sf::Vector2f windowSize = static_cast<sf::Vector2f>(mWindowPtr->getSize());
-    float margin = 100.F;
+    float margin = windowSize.x * 0.1F;
     mPlayers.first.setPosition({margin, windowSize.y / 2});
     mPlayers.second.setPosition({windowSize.x - margin, windowSize.y / 2});
 
-    std::cout << "Second player position: " << mPlayers.second.getPosition().x
-              << ", " << mPlayers.second.getPosition().y << "\n";
+    float wallMargin = windowSize.y * 0.1F;
+    float wallHeight = wallMargin / 2.F;
+    mWalls.resize(2);
+    mWalls[0].setPosition({0, wallMargin});
+    mWalls[0].setSize({windowSize.x, wallHeight});
+    mWalls[1].setPosition({0, windowSize.y - wallHeight});
+    mWalls[1].setSize({windowSize.x, wallHeight});
+
     return true;
 }
 
@@ -110,12 +117,30 @@ void Game::drawPlayer(const Player& player) const
     mWindowPtr->draw(playerShape);
 }
 
+void Game::drawWall(const Wall& wall) const
+{
+    sf::Vector2f wallPosition = wall.getPosition();
+    sf::Vector2f wallSize = wall.getSize();
+
+    sf::RectangleShape wallShape;
+    wallShape.setPosition(wallPosition);
+    wallShape.setSize(wallSize);
+    wallShape.setFillColor(sf::Color::Blue);
+
+    mWindowPtr->draw(wallShape);
+}
+
 void Game::generateOutput()
 {
     mWindowPtr->clear(sf::Color::Black);
 
     drawPlayer(mPlayers.first);
     drawPlayer(mPlayers.second);
+
+    for (const auto& wall : mWalls)
+    {
+        drawWall(wall);
+    }
 
     mWindowPtr->display();
 }
