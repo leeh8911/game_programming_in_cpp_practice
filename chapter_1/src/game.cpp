@@ -83,7 +83,15 @@ void Game::initializeGameObjects()
     wall1.setPosition({0, wallMargin});
     wall2.setPosition({0, windowSize.y - wallHeight});
     mObjectPtrList.emplace_back(std::make_shared<Wall>(wall1));
+    mWallPtrList.emplace_back(mObjectPtrList.back());
     mObjectPtrList.emplace_back(std::make_shared<Wall>(wall2));
+    mWallPtrList.emplace_back(mObjectPtrList.back());
+
+    std::cout << "wall size: " << mWallPtrList.size() << "\n";
+    for (auto& wallPtr : mWallPtrList)
+    {
+        std::cout << "wall: " << wallPtr << "\n";
+    }
 
     sf::Vector2f gameViewLeftTop = wall1.getPosition();
     sf::Vector2f gameViewRightBottom = wall2.getPosition() + wall2.getSize();
@@ -95,7 +103,7 @@ void Game::initializeGameObjects()
     float theta = Random::Uniform(0.F, 1.F) > 0.5F ? 0.F : 180.F;
     theta += Random::Uniform(0.F, 1.F) * 30.F - 15.F;
     theta *= 3.141592F / 180.F;
-    ball.setVelocity({100.F * std::cos(theta), 100.F * std::sin(theta)});
+    ball.setVelocity({500.F * std::cos(theta), 500.F * std::sin(theta)});
     mObjectPtrList.emplace_back(std::make_shared<Ball>(ball));
     mBallPtr = mObjectPtrList.back();
 }
@@ -134,24 +142,47 @@ void Game::processInput()
             }
             if (event.key.code == sf::Keyboard::W)
             {
-                mPlayer1Ptr->setPosition(mPlayer1Ptr->getPosition() + sf::Vector2f{0.F, 10.F});
+                std::cout << "W\n";
+                movePlayer(mPlayer1Ptr, sf::Vector2f{0.F, -10.F});
             }
             if (event.key.code == sf::Keyboard::S)
             {
-                mPlayer1Ptr->setPosition(mPlayer1Ptr->getPosition() - sf::Vector2f{0.F, 10.F});
+                std::cout << "S\n";
+                movePlayer(mPlayer1Ptr, sf::Vector2f{0.F, 10.F});
             }
             if (event.key.code == sf::Keyboard::Up)
             {
-                mPlayer2Ptr->setPosition(mPlayer2Ptr->getPosition() + sf::Vector2f{0.F, 10.F});
+                std::cout << "Up\n";
+                movePlayer(mPlayer2Ptr, sf::Vector2f{0.F, -10.F});
             }
             if (event.key.code == sf::Keyboard::Down)
             {
-                mPlayer2Ptr->setPosition(mPlayer2Ptr->getPosition() - sf::Vector2f{0.F, 10.F});
+                std::cout << "Down\n";
+                movePlayer(mPlayer2Ptr, sf::Vector2f{0.F, 10.F});
             }
             break;
         case sf::Event::Closed:
             mIsRunning = false;
             break;
+        }
+    }
+}
+
+void Game::movePlayer(std::shared_ptr<Object> player, sf::Vector2f movement)
+{
+    std::cout << "move"
+              << "-- size : " << mWallPtrList.size() << "\n";
+    player->setPosition(player->getPosition() + movement);
+    for (const auto& wallPtr : mWallPtrList)
+    {
+        std::cout << "for"
+                  << "wall: " << wallPtr << ", player: " << player << "\n";
+        ;
+        if (mSolverPtr->isColliding(*wallPtr, *player))
+        {
+            std::cout << "collide";
+            player->setPosition(player->getPosition() - movement);
+            return;
         }
     }
 }
@@ -202,7 +233,6 @@ bool Solver::isColliding(Object& first, Object& second)
 
     auto diff = firstCenter - secondCenter;
     auto sum = firstHalfSize + secondHalfSize;
-
     return std::abs(diff.x) < sum.x && std::abs(diff.y) < sum.y;
 }
 
@@ -216,15 +246,18 @@ void Solver::solveCollision(Object& first, Object& second)
     auto diff = firstCenter - secondCenter;
     auto sum = firstHalfSize + secondHalfSize;
 
-    if (std::abs(diff.x) > std::abs(diff.y))
+    float overlapX = sum.x - std::abs(diff.x);
+    float overlapY = sum.y - std::abs(diff.y);
+
+    if (overlapX < overlapY)
     {
         if (diff.x > 0)
         {
-            first.setPosition(second.getPosition() + sf::Vector2f{second.getSize().x, 0.F});
+            first.setPosition(first.getPosition() + sf::Vector2f{overlapX, 0.F});
         }
         else
         {
-            first.setPosition(second.getPosition() - sf::Vector2f{first.getSize().x, 0.F});
+            first.setPosition(first.getPosition() - sf::Vector2f{overlapX, 0.F});
         }
         first.setVelocity({-first.getVelocity().x, first.getVelocity().y});
     }
@@ -232,11 +265,11 @@ void Solver::solveCollision(Object& first, Object& second)
     {
         if (diff.y > 0)
         {
-            first.setPosition(second.getPosition() + sf::Vector2f{0.F, second.getSize().y});
+            first.setPosition(first.getPosition() + sf::Vector2f{0.F, overlapY});
         }
         else
         {
-            first.setPosition(second.getPosition() - sf::Vector2f{0.F, first.getSize().y});
+            first.setPosition(first.getPosition() - sf::Vector2f{0.F, overlapY});
         }
         first.setVelocity({first.getVelocity().x, -first.getVelocity().y});
     }

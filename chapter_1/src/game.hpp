@@ -44,10 +44,11 @@ class Solver
 
     void solve(std::vector<std::shared_ptr<Object>>& objects, std::shared_ptr<Object> ball, float deltaTime);
 
+    bool isColliding(Object& first, Object& second);
+
  private:
     void solveCollision(std::vector<std::shared_ptr<Object>>& objects, std::shared_ptr<Object> ball);
 
-    bool isColliding(Object& first, Object& second);
     void solveCollision(Object& first, Object& second);
 };
 
@@ -63,6 +64,7 @@ class Game
  private:
     void initializeGameObjects();
     void processInput();
+    void movePlayer(std::shared_ptr<Object> player, sf::Vector2f movement);
     void updateGame();
     void generateOutput();
     bool mIsRunning{false};
@@ -76,6 +78,7 @@ class Game
     std::shared_ptr<Object> mPlayer1Ptr{nullptr};
     std::shared_ptr<Object> mPlayer2Ptr{nullptr};
     std::shared_ptr<Object> mBallPtr{nullptr};
+    std::vector<std::shared_ptr<Object>> mWallPtrList{};
 };
 } // namespace gmlib
 
