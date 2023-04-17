@@ -19,24 +19,11 @@
 #include <utility>
 #include <vector>
 
+#include "src/drawer.hpp"
 #include "src/object.hpp"
 
 namespace gmlib
 {
-class Drawer
-{
- public:
-    Drawer() = default;
-    Drawer(const std::shared_ptr<sf::RenderWindow>& windowPtr);
-
-    void setWindowPtr(const std::shared_ptr<sf::RenderWindow>& windowPtr);
-
-    void draw(const Object& object) const;
-
- private:
-    std::shared_ptr<sf::RenderWindow> mWindowPtr{nullptr};
-};
-
 class Solver
 {
  public:

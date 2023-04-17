@@ -24,31 +24,13 @@
 
 namespace gmlib
 {
-Drawer::Drawer(const std::shared_ptr<sf::RenderWindow>& windowPtr) : mWindowPtr(windowPtr)
-{
-}
-
-void Drawer::setWindowPtr(const std::shared_ptr<sf::RenderWindow>& windowPtr)
-{
-    mWindowPtr = windowPtr;
-}
-
-void Drawer::draw(const Object& object) const
-{
-    sf::RectangleShape objectShape;
-    objectShape.setPosition(object.getPosition());
-    objectShape.setSize(object.getSize());
-    objectShape.setFillColor(object.getColor());
-
-    mWindowPtr->draw(objectShape);
-}
 
 bool Game::initialize()
 {
     mWindowPtr = std::make_shared<sf::RenderWindow>(sf::VideoMode(1024, 768), "Game Programming in C++ (Chapter 1)");
     mWindowPtr->setFramerateLimit(60);
 
-    mDrawerPtr = std::make_shared<Drawer>(mWindowPtr);
+    mDrawerPtr = std::make_shared<Drawer>();
     mSolverPtr = std::make_shared<Solver>();
 
     mIsRunning = true;
@@ -216,7 +198,7 @@ void Game::generateOutput()
 
     for (const auto& objectPtr : mObjectPtrList)
     {
-        mDrawerPtr->draw(*objectPtr);
+        mDrawerPtr->draw(mWindowPtr, *objectPtr);
     }
 
     mWindowPtr->display();
