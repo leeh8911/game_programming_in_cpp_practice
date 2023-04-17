@@ -16,6 +16,7 @@
         "CMAKE_C_EXTENSIONS": "OFF"
     },
     "files.associations": {
+        "*.h": "cpp",
         "algorithm": "cpp",
         "any": "cpp",
         "array": "cpp",
@@ -130,6 +131,10 @@
         "regex": "cpp",
         "*.inc": "cpp",
         "valarray": "cpp",
-        "numeric": "cpp"
-    }
+        "numeric": "cpp",
+        "__memory": "cpp"
+    },
+    "cSpell.words": [
+        "gmlib"
+    ]
 }
