@@ -60,6 +60,8 @@ bool Game::initialize()
 
 void Game::initializeGameObjects()
 {
+    mObjectPtrList.clear();
+
     sf::Vector2f windowSize = static_cast<sf::Vector2f>(mWindowPtr->getSize());
     float margin = windowSize.x * 0.1F;
 
@@ -87,12 +89,6 @@ void Game::initializeGameObjects()
     mObjectPtrList.emplace_back(std::make_shared<Wall>(wall2));
     mWallPtrList.emplace_back(mObjectPtrList.back());
 
-    std::cout << "wall size: " << mWallPtrList.size() << "\n";
-    for (auto& wallPtr : mWallPtrList)
-    {
-        std::cout << "wall: " << wallPtr << "\n";
-    }
-
     sf::Vector2f gameViewLeftTop = wall1.getPosition();
     sf::Vector2f gameViewRightBottom = wall2.getPosition() + wall2.getSize();
 
@@ -116,7 +112,10 @@ void Game::runLoop()
     {
         processInput();
 
-        updateGame();
+        if (mState == State::kPlay)
+        {
+            updateGame();
+        }
         mClock.restart();
 
         generateOutput();
@@ -138,26 +137,42 @@ void Game::processInput()
         case sf::Event::KeyPressed:
             if (event.key.code == sf::Keyboard::Escape)
             {
-                mIsRunning = false;
+                if (mState == State::kPlay)
+                {
+                    mState = State::kPause;
+                }
+                else if (mState == State::kPause)
+                {
+                    mState = State::kPlay;
+                }
+            }
+            if (event.key.code == sf::Keyboard::Space)
+            {
+                if (mState == State::kGameOver)
+                {
+                    initializeGameObjects();
+                    mState = State::kPlay;
+                }
+                if (mState == State::kReady)
+                {
+                    initializeGameObjects();
+                    mState = State::kPlay;
+                }
             }
             if (event.key.code == sf::Keyboard::W)
             {
-                std::cout << "W\n";
                 movePlayer(mPlayer1Ptr, sf::Vector2f{0.F, -10.F});
             }
             if (event.key.code == sf::Keyboard::S)
             {
-                std::cout << "S\n";
                 movePlayer(mPlayer1Ptr, sf::Vector2f{0.F, 10.F});
             }
             if (event.key.code == sf::Keyboard::Up)
             {
-                std::cout << "Up\n";
                 movePlayer(mPlayer2Ptr, sf::Vector2f{0.F, -10.F});
             }
             if (event.key.code == sf::Keyboard::Down)
             {
-                std::cout << "Down\n";
                 movePlayer(mPlayer2Ptr, sf::Vector2f{0.F, 10.F});
             }
             break;
@@ -170,17 +185,11 @@ void Game::processInput()
 
 void Game::movePlayer(std::shared_ptr<Object> player, sf::Vector2f movement)
 {
-    std::cout << "move"
-              << "-- size : " << mWallPtrList.size() << "\n";
     player->setPosition(player->getPosition() + movement);
     for (const auto& wallPtr : mWallPtrList)
     {
-        std::cout << "for"
-                  << "wall: " << wallPtr << ", player: " << player << "\n";
-        ;
         if (mSolverPtr->isColliding(*wallPtr, *player))
         {
-            std::cout << "collide";
             player->setPosition(player->getPosition() - movement);
             return;
         }
@@ -192,6 +201,13 @@ void Game::updateGame()
     auto delta_time = mClock.getElapsedTime().asSeconds();
 
     mSolverPtr->solve(mObjectPtrList, mBallPtr, delta_time);
+
+    auto ballPosition = mBallPtr->getPosition();
+
+    if ((ballPosition.x < 0) || (ballPosition.x > mWindowPtr->getSize().x))
+    {
+        mState = State::kGameOver;
+    }
 }
 
 void Game::generateOutput()

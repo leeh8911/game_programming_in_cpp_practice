@@ -54,6 +54,15 @@ class Solver
 
 class Game
 {
+    enum class State
+    {
+        kReady,
+        kPlay,
+        kPause,
+        kScore,
+        kGameOver,
+    };
+
  public:
     Game() = default;
 
@@ -67,7 +76,9 @@ class Game
     void movePlayer(std::shared_ptr<Object> player, sf::Vector2f movement);
     void updateGame();
     void generateOutput();
+
     bool mIsRunning{false};
+    State mState{State::kReady};
 
     std::shared_ptr<sf::RenderWindow> mWindowPtr{nullptr};
     std::shared_ptr<Drawer> mDrawerPtr{nullptr};
