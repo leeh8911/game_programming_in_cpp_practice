@@ -9,7 +9,7 @@
  *
  */
 
-#include "src/random.hpp"
+#include "..\..\chapter_2\src\random.hpp"
 
 #include <gtest/gtest.h>
 
