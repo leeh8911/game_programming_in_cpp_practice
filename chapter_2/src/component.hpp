@@ -81,8 +81,23 @@ class AnimateSpriteComponent : public SpriteComponent
 class BackgroundComponent : public SpriteComponent
 {
  public:
+    BackgroundComponent(class Actor* owner, int drawOrder = 10);
+    void update(float dt) override;
+    void render(sf::RenderTarget& target) override;
+    void setBackgroundTextures(const std::vector<sf::Texture*>& textures);
+    void setScreenSize(const sf::Vector2f& size);
+    void setScrollSpeed(float speed);
+    float getScrollSpeed() const;
+
  private:
-};
+    struct BackgroundTexture
+    {
+        sf::Texture* mTexture;
+        sf::Vector2f mOffset;
+    };
+    std::vector<BackgroundTexture> mBackgroundTextures{};
+    sf::Vector2f mScreenSize{};
+    float mScrollSpeed{};
 } // namespace gmlib
 
 #endif // COMPONENT_HPP_
