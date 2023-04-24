@@ -14,17 +14,30 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <memory>
+#include <vector>
+
 namespace gmlib
 {
 // forward declaration
 class Actor;
+class Game;
+class Component;
 
-class Component
+// type alias
+using ActorPtr = std::shared_ptr<Actor>;
+using ComponentPtr = std::shared_ptr<Component>;
+using GamePtr = std::shared_ptr<Game>;
+
+using ComponentPtrList = std::vector<ComponentPtr>;
+using ActorPtrList = std::vector<ActorPtr>;
+
+class Component : public std::enable_shared_from_this<Component>
 {
  public:
     Component(Actor* owner, int updateOrder = 100);
 
-    virtual ~Component() = default;
+    virtual ~Component();
     virtual void update(float dt);
     virtual void render(sf::RenderTarget& target);
 
@@ -32,7 +45,7 @@ class Component
     void setUpdateOrder(int order);
 
  private:
-    Actor* mOwner{};
+    ActorPtr mOwner{};
     int mUpdateOrder{};
 };
 
@@ -98,6 +111,7 @@ class BackgroundComponent : public SpriteComponent
     std::vector<BackgroundTexture> mBackgroundTextures{};
     sf::Vector2f mScreenSize{};
     float mScrollSpeed{};
+};
 } // namespace gmlib
 
 #endif // COMPONENT_HPP_

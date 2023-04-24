@@ -9,7 +9,7 @@
  *
  */
 
-#include "src\game.hpp"
+#include "src/game.hpp"
 
 int main(int /* argc */, char** /* argv */)
 {
