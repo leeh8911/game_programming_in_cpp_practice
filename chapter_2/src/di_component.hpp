@@ -17,6 +17,8 @@
 #include <memory>
 #include <vector>
 
+#include "src/math.hpp"
+
 namespace gmlib
 {
 class IComponent
@@ -24,7 +26,7 @@ class IComponent
  public:
     virtual ~IComponent() = default;
 
-    virtual void update(float /* deltaTime */) = 0;
+    virtual void update(Real /* deltaTime */) = 0;
     virtual void render(SDL_Renderer* renderer) = 0;
 
  private:

@@ -36,7 +36,7 @@ class Actor
     Actor(GamePtr game);
     virtual ~Actor() = default;
 
-    void update(float deltaTime);
+    void update(Real deltaTime);
     void render(SDL_Renderer* renderer);
 
     void addComponent(ComponentPtr component);

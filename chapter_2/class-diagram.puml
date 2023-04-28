@@ -6,9 +6,14 @@ class Game
 class Actor {
     +update(float stepTime)
     +render(RenderTarget* target)
-    +addComponent(Component* component)
-    +removeComponent(Component* component)
-    -deque<Component*> mComponents
+    +addComponent(IComponent* component)
+    +removeComponent(IComponent* component)
+    -deque<IComponent*> mComponents
+}
+
+class IComponent {
+    {abstract}+update(float stepTime)
+    {abstract}+render(RenderTarget* target)
 }
 
 class Component {
@@ -33,8 +38,9 @@ class Background {
 
 Game "1" *-- "0..*" Actor
 
-Actor "1" *-- "0..*" Component
+Actor "1" *-- "0..*" IComponent
 
+IComponent <|-- Component
 Component <|-- Sprite
 
 Sprite <|-- Animation

@@ -11,9 +11,11 @@
 
 #include "src/actor.hpp"
 
+#include "src/math.hpp"
+
 namespace gmlib
 {
-void Actor::update(float deltaTime)
+void Actor::update(Real deltaTime)
 {
     for (auto& component : m_Components)
     {

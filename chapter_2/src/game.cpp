@@ -15,6 +15,8 @@
 
 #include <iostream>
 
+#include "src/math.hpp"
+
 namespace gmlib
 {
 Game::Game()
@@ -48,19 +50,42 @@ bool Game::initialize()
 
 void Game::runLoop()
 {
+
     while (m_IsRunning)
     {
         processInput();
-        updateGame();
+
+        Real currentTime = static_cast<Real>(SDL_GetTicks());
+        Real deltaTime = (currentTime - m_TickCount) / 1000.0_real;
+        m_TickCount = currentTime;
+
+        updateGame(deltaTime);
+
         generateOutput();
     }
 }
 
 void Game::processInput()
 {
+    SDL_Event event;
+    while (SDL_PollEvent(&event))
+    {
+        switch (event.type)
+        {
+        case SDL_QUIT:
+            m_IsRunning = false;
+            break;
+        }
+    }
+
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+    if (state[SDL_SCANCODE_ESCAPE])
+    {
+        m_IsRunning = false;
+    }
 }
 
-void Game::updateGame()
+void Game::updateGame(Real /* deltaTime */)
 {
 }
 

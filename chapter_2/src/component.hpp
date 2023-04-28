@@ -16,6 +16,7 @@
 
 #include "src/actor.hpp"
 #include "src/di_component.hpp"
+#include "src/math.hpp"
 
 namespace gmlib
 {
@@ -24,7 +25,7 @@ class Component : public IComponent
  public:
     Component(ActorPtr owner) : IComponent(), m_Owner(owner){};
 
-    void update(float /* deltaTime */) override{};
+    void update(Real /* deltaTime */) override{};
     void render(SDL_Renderer* /*renderer*/) override{};
 
  private:

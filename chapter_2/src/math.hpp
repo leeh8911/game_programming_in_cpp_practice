@@ -17,9 +17,21 @@
 namespace gmlib
 {
 
+using Real = float;
+
+constexpr Real operator""_real(long double value)
+{
+    return static_cast<Real>(value);
+}
+
+} // namespace gmlib
+
+namespace gmlib
+{
+
 struct Vector2
 {
-    float x, y;
+    Real x, y;
 };
 
 class Math
@@ -28,7 +40,7 @@ class Math
     class Vector2
     {
      public:
-        inline static constexpr ::gmlib::Vector2 s_Zero{0.0f, 0.0f};
+        inline static constexpr ::gmlib::Vector2 s_Zero{0.0_real, 0.0_real};
     };
 };
 } // namespace gmlib

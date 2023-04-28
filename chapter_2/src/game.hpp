@@ -32,13 +32,14 @@ class Game
 
  private:
     void processInput();
-    void updateGame();
+    void updateGame(Real deltaTime);
     void generateOutput();
 
     bool m_IsRunning{true};
     SDL_Window* m_Window{nullptr};
     SDL_Renderer* m_Renderer{nullptr};
 
+    Real m_TickCount{0.0_real};
     ActorList m_Actors{};
 };
 } // namespace gmlib
