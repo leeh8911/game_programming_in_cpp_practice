@@ -3,7 +3,7 @@
  * @author sangwon lee (leeh8911@gmail.com)
  * @brief
  * @version 0.1
- * @date 2023-04-25
+ * @date 2023-04-27
  *
  * @copyright Copyright (c) 2023
  *
@@ -11,88 +11,70 @@
 
 #include "src/game.hpp"
 
+#include <SDL.h>
+
+#include <iostream>
+
 namespace gmlib
 {
+Game::Game()
+{
+}
+
+Game::~Game()
+{
+}
+
 bool Game::initialize()
 {
-    bool success{true};
-
-    if (this->mWindow.isOpen())
+    int sdlResult = SDL_Init(SDL_INIT_VIDEO);
+    if (sdlResult != 0)
     {
-        success = false;
-    }
-    else
-    {
-        this->mWindow.create(sf::VideoMode(1024, 768), "Game");
+        SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+        return false;
     }
 
-    return success;
+    m_Window = SDL_CreateWindow("Game Programming", 100, 100, 1024, 768, 0);
+    if (m_Window == nullptr)
+    {
+        SDL_Log("Failed to create window: %s", SDL_GetError());
+        return false;
+    }
+
+    m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+    return true;
 }
 
 void Game::runLoop()
 {
-    sf::Clock clock{};
-    while (this->mIsRunning)
+    while (m_IsRunning)
     {
-        this->processInput();
-
-        this->update(clock.restart().asSeconds());
-
-        this->generateOutput();
+        processInput();
+        updateGame();
+        generateOutput();
     }
-}
-
-void Game::shutdown()
-{
-    this->mWindow.close();
 }
 
 void Game::processInput()
 {
-    sf::Event event;
-
-    while (this->mWindow.pollEvent(event))
-    {
-        switch (event.type)
-        {
-        case sf::Event::Closed:
-            this->mIsRunning = false;
-            break;
-        }
-    }
 }
 
-void Game::update(float dt)
+void Game::updateGame()
 {
-    for (auto& actor : this->mActors)
-    {
-        actor->update(dt);
-    }
 }
 
 void Game::generateOutput()
 {
-    this->mWindow.clear();
-
-    this->mWindow.display();
+    SDL_SetRenderDrawColor(m_Renderer, 0, 0, 255, 255);
+    SDL_RenderClear(m_Renderer);
+    SDL_RenderPresent(m_Renderer);
 }
 
-void Game::addActor(ActorPtr actor)
+void Game::shutdown()
 {
-    auto iter = std::find(this->mActors.begin(), this->mActors.end(), actor);
-
-    if (iter == this->mActors.end())
-    {
-        this->mActors.emplace_back(actor);
-    }
-}
-void Game::removeActor(ActorPtr actor)
-{
-    auto iter = std::find(this->mActors.begin(), this->mActors.end(), actor);
-
-    if (iter != this->mActors.end())
-    {
-        this->mActors.erase(iter);
-    }
+    SDL_DestroyRenderer(m_Renderer);
+    SDL_DestroyWindow(m_Window);
+    SDL_Quit();
 }
 } // namespace gmlib

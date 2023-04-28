@@ -3,7 +3,7 @@
  * @author sangwon lee (leeh8911@gmail.com)
  * @brief
  * @version 0.1
- * @date 2023-04-19
+ * @date 2023-04-29
  *
  * @copyright Copyright (c) 2023
  *
@@ -12,55 +12,46 @@
 #ifndef ACTOR_HPP_
 #define ACTOR_HPP_
 
-#include <SFML/Graphics.hpp>
 #include <memory>
 #include <vector>
 
+#include "src/di_component.hpp"
+#include "src/math.hpp"
+
 namespace gmlib
 {
-
-// forward declaration
-class Actor;
 class Game;
-class Component;
-
-// type alias
-using ActorPtr = std::shared_ptr<Actor>;
-using ComponentPtr = std::shared_ptr<Component>;
 using GamePtr = std::shared_ptr<Game>;
-
-using ComponentPtrList = std::vector<ComponentPtr>;
-using ActorPtrList = std::vector<ActorPtr>;
 
 class Actor
 {
+ public:
     enum class State
     {
-        kActive,
-        kPaused,
-        kDead
+        e_Active,
+        e_Pause,
+        e_Dead
     };
 
- public:
     Actor(GamePtr game);
-    virtual ~Actor();
+    virtual ~Actor() = default;
 
-    void update(float dt);
-    void updateComponents(float dt);
-    virtual void updateActor(float dt);
+    void update(float deltaTime);
+    void render(SDL_Renderer* renderer);
 
     void addComponent(ComponentPtr component);
     void removeComponent(ComponentPtr component);
 
  private:
-    State mState{};
-
-    sf::Vector2f mPosition{};
-    float mScale{};
-    float mRotation{};
-
-    ComponentPtrList mComponents{};
-    GamePtr mGame{};
+    Vector2 m_Position{Math::Vector2::s_Zero};
+    ComponentList m_Components{};
+    GamePtr m_Game{nullptr};
 };
+
+using ActorPtr = std::shared_ptr<Actor>;
+using ActorWeakPtr = std::weak_ptr<Actor>;
+using ActorList = std::vector<ActorPtr>;
+
 } // namespace gmlib
+
 #endif // ACTOR_HPP_

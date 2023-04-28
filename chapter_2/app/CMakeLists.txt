@@ -10,6 +10,6 @@ target_include_directories(${PROJECT_APP} PUBLIC
                         )
 
 target_link_libraries(${PROJECT_APP} PUBLIC
-                        ${CONAN_LIBS}
                         ${PROJECT_LIB}
+                        ${CONAN_LIBS}
                         )

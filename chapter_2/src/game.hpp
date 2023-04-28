@@ -3,7 +3,7 @@
  * @author sangwon lee (leeh8911@gmail.com)
  * @brief
  * @version 0.1
- * @date 2023-04-25
+ * @date 2023-04-27
  *
  * @copyright Copyright (c) 2023
  *
@@ -12,7 +12,9 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
-#include <SFML/Graphics.hpp>
+#include <SDL.h>
+
+#include <memory>
 
 #include "src/actor.hpp"
 
@@ -21,8 +23,8 @@ namespace gmlib
 class Game
 {
  public:
-    Game() = default;
-    ~Game() = default;
+    Game();
+    ~Game();
 
     bool initialize();
     void runLoop();
@@ -30,16 +32,14 @@ class Game
 
  private:
     void processInput();
-    void update(float dt);
+    void updateGame();
     void generateOutput();
 
-    void addActor(ActorPtr actor);
-    void removeActor(ActorPtr actor);
+    bool m_IsRunning{true};
+    SDL_Window* m_Window{nullptr};
+    SDL_Renderer* m_Renderer{nullptr};
 
-    bool mIsRunning{true};
-    sf::RenderWindow mWindow{};
-
-    ActorPtrList mActors{};
+    ActorList m_Actors{};
 };
 } // namespace gmlib
 

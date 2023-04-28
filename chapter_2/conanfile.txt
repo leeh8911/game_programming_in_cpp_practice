@@ -2,8 +2,8 @@
 protobuf/3.5.1@bincrafters/stable
 eigen/3.3.9@camposs/stable
 sophus/22.04.1
+sdl/2.26.1
 gtest/1.13.0
-sfml/2.5.1@bincrafters/stable
 
 [generators]
 cmake

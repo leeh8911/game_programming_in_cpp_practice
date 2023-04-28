@@ -3,7 +3,7 @@
  * @author sangwon lee (leeh8911@gmail.com)
  * @brief
  * @version 0.1
- * @date 2023-04-25
+ * @date 2023-04-29
  *
  * @copyright Copyright (c) 2023
  *
@@ -13,57 +13,25 @@
 
 namespace gmlib
 {
-
-Actor::Actor(GamePtr game) : mGame{game}
+void Actor::update(float deltaTime)
 {
-}
-
-Actor::~Actor()
-{
-}
-
-void Actor::update(float dt)
-{
-    if (this->mState == State::kActive)
+    for (auto& component : m_Components)
     {
-        this->updateComponents(dt);
-        this->updateActor(dt);
+        component->update(deltaTime);
     }
 }
 
-void Actor::updateComponents(float dt)
+void Actor::render(SDL_Renderer* renderer)
 {
-    for (auto& component : this->mComponents)
+    for (auto& component : m_Components)
     {
-        component->update(dt);
+        component->render(renderer);
     }
-}
-
-void Actor::updateActor(float dt)
-{
 }
 
 void Actor::addComponent(ComponentPtr component)
 {
-    auto iter = std::find(this->mComponents.begin(), this->mComponents.end(), component);
-
-    if (iter == this->mComponents.end())
-    {
-        this->mComponents.emplace_back(component);
-        std::sort(this->mComponents.begin(), this->mComponents.end(),
-                  [](const ComponentPtr& a, const ComponentPtr& b)
-                  { return a->getUpdateOrder() < b->getUpdateOrder(); });
-    }
-}
-
-void Actor::removeComponent(ComponentPtr component)
-{
-    auto iter = std::find(this->mComponents.begin(), this->mComponents.end(), component);
-
-    if (iter != this->mComponents.end())
-    {
-        this->mComponents.erase(iter);
-    }
+    m_Components.emplace_back(component);
 }
 
 } // namespace gmlib
