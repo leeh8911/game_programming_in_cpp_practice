@@ -31,6 +31,8 @@ class Game
     void shutdown();
 
  private:
+    void addActor(ActorPtr actor);
+
     void processInput();
     void updateGame(Real deltaTime);
     void generateOutput();
@@ -41,6 +43,8 @@ class Game
 
     Real m_TickCount{0.0_real};
     ActorList m_Actors{};
+    ActorList m_PendingActors{};
+    bool m_UpdatingActors{false};
 };
 } // namespace gmlib
 

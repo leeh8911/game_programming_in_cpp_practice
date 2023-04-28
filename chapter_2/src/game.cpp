@@ -13,8 +13,10 @@
 
 #include <SDL.h>
 
+#include <algorithm>
 #include <iostream>
 
+#include "game.hpp"
 #include "src/math.hpp"
 
 namespace gmlib
@@ -85,8 +87,47 @@ void Game::processInput()
     }
 }
 
-void Game::updateGame(Real /* deltaTime */)
+void Game::addActor(ActorPtr actor)
 {
+    if (m_UpdatingActors)
+    {
+        m_PendingActors.emplace_back(actor);
+    }
+    else
+    {
+        m_Actors.emplace_back(actor);
+    }
+}
+
+void Game::updateGame(Real deltaTime)
+{
+    m_UpdatingActors = true;
+
+    for (auto actor : m_Actors)
+    {
+        actor->update(deltaTime);
+    }
+    m_UpdatingActors = false;
+
+    for (auto pending : m_PendingActors)
+    {
+        m_Actors.emplace_back(pending);
+    }
+    m_PendingActors.clear();
+
+    auto count = std::count_if(m_Actors.begin(), m_Actors.end(),
+                               [](ActorPtr actor) { return actor->getState() == Actor::State::e_Dead; });
+    std::vector<ActorPtr> deadActors{};
+    deadActors.reserve(count);
+
+    for (auto actor : m_Actors)
+    {
+        if (actor->getState() == Actor::State::e_Dead)
+        {
+            deadActors.emplace_back(std::move(actor));
+        }
+    }
+    deadActors.clear();
 }
 
 void Game::generateOutput()

@@ -37,13 +37,21 @@ class Actor
     virtual ~Actor() = default;
 
     void update(Real deltaTime);
-    void render(SDL_Renderer* renderer);
+    void updateComponents(Real deltaTime);
+    virtual void updateActor(Real deltaTime);
 
     void addComponent(ComponentPtr component);
     void removeComponent(ComponentPtr component);
 
+    State getState() const;
+
  private:
     Vector2 m_Position{Math::Vector2::s_Zero};
+    Real m_Scale{1.0_real};
+    Real m_Rotation{0.0_real};
+
+    State m_State{State::e_Active};
+
     ComponentList m_Components{};
     GamePtr m_Game{nullptr};
 };

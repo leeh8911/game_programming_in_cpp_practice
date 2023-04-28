@@ -23,12 +23,15 @@ namespace gmlib
 class Component : public IComponent
 {
  public:
-    Component(ActorPtr owner) : IComponent(), m_Owner(owner){};
+    Component(ActorPtr owner);
 
-    void update(Real /* deltaTime */) override{};
-    void render(SDL_Renderer* /*renderer*/) override{};
+    void update(Real /* deltaTime */) override;
+
+    int getUpdateOrder() const;
 
  private:
+    ActorWeakPtr m_Owner;
+    int m_UpdateOrder{100};
 };
 } // namespace gmlib
 

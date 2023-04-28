@@ -23,17 +23,13 @@ void Actor::update(Real deltaTime)
     }
 }
 
-void Actor::render(SDL_Renderer* renderer)
-{
-    for (auto& component : m_Components)
-    {
-        component->render(renderer);
-    }
-}
-
 void Actor::addComponent(ComponentPtr component)
 {
     m_Components.emplace_back(component);
 }
 
+Actor::State Actor::getState() const
+{
+    return m_State;
+}
 } // namespace gmlib
