@@ -31,8 +31,10 @@ add_subdirectory(docs)
 endif()
 
 if (${BUILD_TEST} OR ${BUILD_APP})
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
+    include(FetchContent)
+    include(cmake/fetch_googletest.cmake)
+    include(cmake/fetch_sdl.cmake)
+
 
     add_subdirectory(src)
 

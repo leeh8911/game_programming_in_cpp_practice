@@ -99,6 +99,68 @@ void Game::addActor(ActorPtr actor)
     }
 }
 
+void Game::removeActor(ActorPtr actor)
+{
+    auto iter = std::find(m_PendingActors.begin(), m_PendingActors.end(), actor);
+    if (iter != m_PendingActors.end())
+    {
+        std::iter_swap(iter, m_PendingActors.end() - 1);
+        m_PendingActors.pop_back();
+    }
+
+    iter = std::find(m_Actors.begin(), m_Actors.end(), actor);
+    if (iter != m_Actors.end())
+    {
+        std::iter_swap(iter, m_Actors.end() - 1);
+        m_Actors.pop_back();
+    }
+}
+
+void Game::removeSprite(SpritePtr sprite)
+{
+    auto iter = std::find(m_Sprites.begin(), m_Sprites.end(), sprite);
+    if (iter != m_Sprites.end())
+    {
+        std::iter_swap(iter, m_Sprites.end() - 1);
+        m_Sprites.pop_back();
+    }
+}
+
+SDL_Texture* Game::getTexture(const std::string& fileName)
+{
+    SDL_Surface* surf = IMG_Load(fileName.c_str());
+    if (!surf)
+    {
+        SDL_Log("Failed to load texture file %s", fileName.c_str());
+        return nullptr;
+    }
+
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(m_Renderer, surf);
+    SDL_FreeSurface(surf);
+    if (!texture)
+    {
+        SDL_Log("Failed to convert surface to texture for %s", fileName.c_str());
+        return nullptr;
+    }
+    return nullptr;
+}
+
+void Game::addSprite(SpritePtr sprite)
+{
+    int myDrawOrder = sprite->getDrawOrder();
+
+    auto iter = m_Sprites.begin();
+    for (; iter != m_Sprites.end(); ++iter)
+    {
+        if (myDrawOrder < (*iter)->getDrawOrder())
+        {
+            break;
+        }
+    }
+
+    m_Sprites.insert(iter, sprite);
+}
+
 void Game::updateGame(Real deltaTime)
 {
     m_UpdatingActors = true;
@@ -130,6 +192,39 @@ void Game::updateGame(Real deltaTime)
     deadActors.clear();
 }
 
+void Game::loadData()
+{
+    m_Ship = std::make_shared<Ship>(this->shared_from_this());
+    m_Ship->setPosition(Vector2{100.0_real, 768.0_real / 2.0_real});
+    m_Ship->setScale(1.5_real);
+
+    ActorPtr backgroundActor = std::make_shared<Actor>(this->shared_from_this());
+    backgroundActor->setPosition(Vector2{512.0_real, 384.0_real});
+    BackgroundPtr bg = std::make_shared<Background>(backgroundActor);
+    std::vector<SDL_Texture*> bgTextures = {getTexture("assets/Farback01.png"), getTexture("assets/Farback02.png")};
+    bg->setTexture(bgTextures);
+    bg->setScrollSpeed(-100.0_real);
+
+    bg = std::make_shared<Background>(backgroundActor);
+    bgTextures = {getTexture("assets/Stars.png"), getTexture("assets/Stars.png")};
+    bg->setTexture(bgTextures);
+    bg->setScrollSpeed(-200.0_real);
+}
+
+void Game::unloadData()
+{
+    while (!m_Actors.empty())
+    {
+        m_Actors.pop_back();
+    }
+
+    for (auto i : m_Textures)
+    {
+        SDL_DestroyTexture(i.second);
+    }
+    m_Textures.clear();
+}
+
 void Game::generateOutput()
 {
     SDL_SetRenderDrawColor(m_Renderer, 0, 0, 255, 255);
@@ -139,8 +234,39 @@ void Game::generateOutput()
 
 void Game::shutdown()
 {
+    unloadData();
+    IMG_Quit();
+
     SDL_DestroyRenderer(m_Renderer);
     SDL_DestroyWindow(m_Window);
     SDL_Quit();
+}
+SDL_Texture* Game::getTexture(const std::string& fileName)
+{
+    SDL_Texture* tex = nullptr;
+    auto iter = m_Textures.find(fileName);
+    if (iter != m_Textures.end())
+    {
+        tex = iter->second;
+    }
+    else
+    {
+        SDL_Surface* surf = IMG_Load(fileName.c_str());
+        if (!surf)
+        {
+            SDL_Log("Failed to load texture file %s", fileName.c_str());
+            return nullptr;
+        }
+
+        tex = SDL_CreateTextureFromSurface(m_Renderer, surf);
+        SDL_FreeSurface(surf);
+        if (!tex)
+        {
+            SDL_Log("Failed to convert surface to texture for %s", fileName.c_str());
+            return nullptr;
+        }
+        m_Textures.emplace(fileName.c_str(), tex);
+    }
+    return tex;
 }
 } // namespace gmlib

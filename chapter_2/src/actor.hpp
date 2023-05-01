@@ -44,6 +44,9 @@ class Actor
     void removeComponent(ComponentPtr component);
 
     State getState() const;
+    Real getScale() const;
+    Real getRotation() const;
+    Vector2 getPosition() const;
 
  private:
     Vector2 m_Position{Math::Vector2::s_Zero};
@@ -59,6 +62,23 @@ class Actor
 using ActorPtr = std::shared_ptr<Actor>;
 using ActorWeakPtr = std::weak_ptr<Actor>;
 using ActorList = std::vector<ActorPtr>;
+
+class Ship : public Actor
+{
+ public:
+    Ship(GamePtr game);
+
+    void updateActor(Real deltaTime) override;
+    void processKeyboard(const uint8_t* state);
+    Real getRightSpeed() const;
+    Real getDownSpeed() const;
+
+ private:
+    Real m_RightSpeed{0.0_real};
+    Real m_DownSpeed{0.0_real};
+};
+
+using ShipPtr = std::shared_ptr<Ship>;
 
 } // namespace gmlib
 

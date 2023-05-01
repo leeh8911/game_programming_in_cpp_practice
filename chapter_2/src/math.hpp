@@ -42,6 +42,20 @@ class Math
      public:
         inline static constexpr ::gmlib::Vector2 s_Zero{0.0_real, 0.0_real};
     };
+
+    static Real toDegrees(Real radians)
+    {
+        return radians * 180.0_real / static_cast<Real>(PI);
+    }
+
+    static Real toRadians(Real degrees)
+    {
+        return degrees * static_cast<Real>(PI) / 180.0_real;
+    }
+
+    static constexpr Real PI = 3.1415926535_real;
+    static constexpr Real TWO_PI = 2.0_real * PI;
+    static constexpr Real HALF_PI = 0.5_real * PI;
 };
 } // namespace gmlib
 #endif // MATH_HPP_
