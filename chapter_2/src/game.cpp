@@ -12,6 +12,7 @@
 #include "src/game.hpp"
 
 #include <SDL.h>
+#include <SDL_image.h>
 
 #include <algorithm>
 #include <iostream>
