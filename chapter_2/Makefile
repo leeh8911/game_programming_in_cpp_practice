@@ -2,7 +2,7 @@ PROJECT_NAME = $(notdir $(CURDIR))
 release = release
 debug = "debug"
 
-ifeq ($(config), release) 
+ifeq ($(config), release)
 	config = Release
 else
 	config = Debug
@@ -51,8 +51,8 @@ test: build-test run-test
 .PHONY: run-app
 run-app:
 	cd build && \
-	bin\$(PROJECT_NAME)_app.exe
-	
+	Debug\$(PROJECT_NAME)_app.exe
+
 .PHONY: app
 app: build-app run-app
 

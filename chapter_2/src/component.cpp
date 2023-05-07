@@ -166,4 +166,8 @@ void Background::setTexture(const std::vector<SDL_Texture*>& textures)
     }
 }
 
+void Background::setScrollSpeed(Real speed)
+{
+    m_ScrollSpeed = speed;
+}
 } // namespace gmlib

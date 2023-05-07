@@ -47,6 +47,9 @@ class Actor
     Real getScale() const;
     Real getRotation() const;
     Vector2 getPosition() const;
+    void setPosition(const Vector2& position);
+    void setScale(Real scale);
+    void setRotation(Real rotation);
 
  private:
     Vector2 m_Position{Math::Vector2::s_Zero};

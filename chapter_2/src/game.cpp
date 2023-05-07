@@ -127,25 +127,6 @@ void Game::removeSprite(SpritePtr sprite)
     }
 }
 
-SDL_Texture* Game::getTexture(const std::string& fileName)
-{
-    SDL_Surface* surf = IMG_Load(fileName.c_str());
-    if (!surf)
-    {
-        SDL_Log("Failed to load texture file %s", fileName.c_str());
-        return nullptr;
-    }
-
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(m_Renderer, surf);
-    SDL_FreeSurface(surf);
-    if (!texture)
-    {
-        SDL_Log("Failed to convert surface to texture for %s", fileName.c_str());
-        return nullptr;
-    }
-    return nullptr;
-}
-
 void Game::addSprite(SpritePtr sprite)
 {
     int myDrawOrder = sprite->getDrawOrder();

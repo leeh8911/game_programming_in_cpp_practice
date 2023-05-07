@@ -15,6 +15,10 @@
 
 namespace gmlib
 {
+
+Actor::Actor(GamePtr game) : m_Game(game)
+{
+}
 void Actor::update(Real deltaTime)
 {
     for (auto& component : m_Components)
@@ -23,9 +27,27 @@ void Actor::update(Real deltaTime)
     }
 }
 
+void Actor::updateActor(Real /* deltaTime */)
+{
+}
+
 void Actor::addComponent(ComponentPtr component)
 {
     m_Components.emplace_back(component);
+}
+void Actor::setPosition(const Vector2& position)
+{
+    m_Position = position;
+}
+
+void Actor::setScale(Real scale)
+{
+    m_Scale = scale;
+}
+
+void Actor::setRotation(Real rotation)
+{
+    m_Rotation = rotation;
 }
 
 Vector2 Actor::getPosition() const
@@ -45,5 +67,13 @@ Real Actor::getScale() const
 Real Actor::getRotation() const
 {
     return m_Rotation;
+}
+
+Ship::Ship(GamePtr game) : Actor(game)
+{
+}
+
+void Ship::updateActor(Real /*  deltaTime */)
+{
 }
 } // namespace gmlib
